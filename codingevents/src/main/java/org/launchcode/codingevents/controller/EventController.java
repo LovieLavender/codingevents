@@ -1,6 +1,7 @@
 package org.launchcode.codingevents.controller;
 
 
+import org.launchcode.codingevents.data.EventData;
 import org.launchcode.codingevents.models.Event;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,12 +17,13 @@ import java.util.List;
 @RequestMapping("events")
 public class EventController {
 
-    private static List<Event> events = new ArrayList<>();
+//    private static List<Event> events = new ArrayList<>();  removed this since we are not holding data anymore in this controller
+    //class but will be held in the event data class
 
     @GetMapping
     public String displayAllEvents(Model model){
       model.addAttribute("title", "All Events");
-      model.addAttribute("events", events);
+      model.addAttribute("events", EventData.getAll());
       return "events/index";
     }
     @GetMapping("create")
@@ -32,7 +34,7 @@ public class EventController {
 
     @PostMapping("create")
     public String processForm(@RequestParam String eventName, @RequestParam String eventDescription){
-        events.add(new Event(eventName, eventDescription));
+        EventData.add(new Event(eventName, eventDescription));
         return "redirect:/events"; //this takes it back to the display events page
     }
 
