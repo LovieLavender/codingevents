@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.List;
+
+//import static com.sun.beans.introspect.PropertyInfo.Name.required;
+
 
 @Controller
 @RequestMapping("events")
@@ -36,6 +37,24 @@ public class EventController {
     public String processForm(@RequestParam String eventName, @RequestParam String eventDescription){
         EventData.add(new Event(eventName, eventDescription));
         return "redirect:/events"; //this takes it back to the display events page
+    }
+
+    @GetMapping("delete") //this display the form. We add the Model object since we are passing data into
+    public String renderDeleteEventForm(Model model){
+     model.addAttribute("title", "Delete Event");
+     model.addAttribute("events", EventData.getAll()); //this is us passing in the collection of events to delete
+     return "events/delete";
+    }
+
+    @PostMapping("delete")
+    //using int[] which is an array of integers due to the html handling all the id's
+    public String processDeleteEventForm(@RequestParam(required = false) int[] eventIds){
+        if (eventIds != null){
+            for (int id : eventIds){
+                EventData.remove(id);
+            }
+        }
+        return "redirect:/events";
     }
 
 }
