@@ -4,11 +4,8 @@ package org.launchcode.codingevents.controller;
 import org.launchcode.codingevents.data.EventData;
 import org.launchcode.codingevents.models.Event;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 //import static com.sun.beans.introspect.PropertyInfo.Name.required;
@@ -33,9 +30,9 @@ public class EventController {
         return "events/create";
     }
 
-    @PostMapping("create")
-    public String processForm(@RequestParam String eventName, @RequestParam String eventDescription){
-        EventData.add(new Event(eventName, eventDescription));
+    @PostMapping("create") //now because of the @ModelAttribute, when this method is called, Spring will create a new Event object
+    public String processForm(@ModelAttribute Event newEvent){
+        EventData.add(newEvent);
         return "redirect:/events"; //this takes it back to the display events page
     }
 
