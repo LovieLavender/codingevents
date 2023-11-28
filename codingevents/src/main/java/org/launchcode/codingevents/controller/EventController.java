@@ -2,9 +2,10 @@ package org.launchcode.codingevents.controller;
 
 
 import jakarta.validation.Valid;
-import org.launchcode.codingevents.data.EventData;
+import org.launchcode.codingevents.data.EventRepository;
 import org.launchcode.codingevents.models.Event;
 import org.launchcode.codingevents.models.EventType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +21,16 @@ public class EventController {
 
 //    private static List<Event> events = new ArrayList<>();  removed this since we are not holding data anymore in this controller
     //class but will be held in the event data class
+    @Autowired
+    private EventRepository eventRepository;
 
+    //findAll, save, findById
+    //we replaced all uses of our static Events data class that was storing objects in a memory collection and
+    // replaced them with usages of the repository which is the interface that allows us to react with our Mysql database.
     @GetMapping
     public String displayAllEvents(Model model){
       model.addAttribute("title", "All Events");
-      model.addAttribute("events", EventData.getAll());
+      model.addAttribute("events", eventRepository.findAll());
       return "events/index";
     }
 
@@ -45,14 +51,14 @@ public class EventController {
             model.addAttribute("errorMsg", "Bad data!");
             return "events/create";
         }
-        EventData.add(newEvent);
+        eventRepository.save(newEvent);
         return "redirect:/events"; //this takes it back to the display events page
     }
 
     @GetMapping("delete") //this display the form. We add the Model object since we are passing data into
     public String renderDeleteEventForm(Model model){
      model.addAttribute("title", "Delete Event");
-     model.addAttribute("events", EventData.getAll()); //this is us passing in the collection of events to delete
+     model.addAttribute("events", eventRepository.findAll()); //this is us passing in the collection of events to delete
      return "events/delete";
     }
 
@@ -61,7 +67,7 @@ public class EventController {
     public String processDeleteEventForm(@RequestParam(required = false) int[] eventIds){
         if (eventIds != null){
             for (int id : eventIds){
-                EventData.remove(id);
+                eventRepository.deleteById(id);
             }
         }
         return "redirect:/events";
