@@ -5,11 +5,14 @@ import jakarta.validation.Valid;
 import org.launchcode.codingevents.data.EventCategoryRepository;
 import org.launchcode.codingevents.data.EventRepository;
 import org.launchcode.codingevents.models.Event;
+import org.launchcode.codingevents.models.EventCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
+
+import java.util.Optional;
 
 
 //import static com.sun.beans.introspect.PropertyInfo.Name.required;
@@ -30,10 +33,22 @@ public class EventController {
     //we replaced all uses of our static Events data class that was storing objects in a memory collection and
     // replaced them with usages of the repository which is the interface that allows us to react with our Mysql database.
     @GetMapping
-    public String displayAllEvents(Model model){
-      model.addAttribute("title", "All Events");
-      model.addAttribute("events", eventRepository.findAll());
-      return "events/index";
+    public String displayEvents(@RequestParam(required = false) Integer categoryId, Model model){
+
+        if (categoryId == null) {
+            model.addAttribute("title", "All Events");
+            model.addAttribute("events", eventRepository.findAll());
+        } else {
+            Optional<EventCategory> result = eventCategoryRepository.findById(categoryId);
+            if (result.isEmpty()) {
+                model.addAttribute("title", "Invalid Category ID: " + categoryId);
+            } else {
+                EventCategory category = result.get();
+                model.addAttribute("title", "Events in category: " + category.getName());
+                model.addAttribute("events", category.getEvents());
+            }
+        }
+              return "events/index";
     }
 
 //    added another attribute below, an empty Event object to handle the no-arg constructor.
