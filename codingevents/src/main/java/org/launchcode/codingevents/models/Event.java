@@ -37,7 +37,6 @@ public class Event extends AbstractEntity{
         this.eventCategory = eventCategory;
 
     }
-
 //    public Event(){
 //        this.id= nextId;
 //        nextId++;

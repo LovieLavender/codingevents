@@ -55,7 +55,7 @@ public class EventController {
     @GetMapping("create")
     public String displayCreateEventForm(Model model) {
         model.addAttribute("title", "Create Event");
-        model.addAttribute("event", new Event());
+        model.addAttribute(new Event());
         model.addAttribute("categories", eventCategoryRepository.findAll());
         return "events/create";
     }
@@ -65,7 +65,6 @@ public class EventController {
 
         if (errors.hasErrors()){
             model.addAttribute("title", "Create Event");
-            model.addAttribute("errorMsg", "Bad data!");
             return "events/create";
         }
         eventRepository.save(newEvent);
@@ -89,5 +88,22 @@ public class EventController {
         }
         return "redirect:/events";
     }
+
+    @GetMapping("detail")
+    public String displayEventDetails(@RequestParam Integer eventId, Model model){
+
+        Optional<Event> result = eventRepository.findById(eventId);
+
+        if (result.isEmpty()) {
+            model.addAttribute("title", "Invalid Event ID: " + eventId);
+        } else {
+            Event event = result.get();
+            model.addAttribute("title", event.getName() + " Details");
+            model.addAttribute("event", event);
+        }
+          return "events/detail";
+
+        }
+
 
 }

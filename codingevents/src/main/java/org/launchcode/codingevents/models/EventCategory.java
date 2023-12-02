@@ -14,8 +14,6 @@ public class EventCategory extends AbstractEntity{
     //the mappedBy value has to be the name of the field in the class we are storing here that creates this relationship. The relationship is going to be owned by the event.
     //it's going to have a foreign key or reference to an event category.
     //te below field do not go in the constructor because it's being created in the field's declaration
-
-
     @OneToMany(mappedBy = "eventCategory")
     private final List<Event> events = new ArrayList<>();
 
