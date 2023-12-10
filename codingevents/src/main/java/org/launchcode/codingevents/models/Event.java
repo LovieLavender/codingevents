@@ -6,6 +6,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 public class Event extends AbstractEntity{
 //    @Id
@@ -14,11 +18,11 @@ public class Event extends AbstractEntity{
     //the above stuff is now in our abstract entity class along with getter, hashcode and equals
 
 
-//    private static int nextId = 1; no longer need this because the persistent database will do this
-    @NotBlank(message = "Name is required.")
+//    private static int nextId = 1; no longer need this because the persistent database will do t
+
+    @NotBlank(message = "Name is required")
     @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
     private String name;
-
     @OneToOne(cascade = CascadeType.ALL)
     @Valid
     @NotNull
@@ -29,6 +33,9 @@ public class Event extends AbstractEntity{
     @ManyToOne
     @NotNull(message = "Category is required")
     private EventCategory eventCategory;
+
+    @ManyToMany
+    private final List<Tag> tags = new ArrayList<>();
 
 
     public Event(String name, EventCategory eventCategory) {
@@ -68,6 +75,14 @@ public class Event extends AbstractEntity{
         this.eventDetails = eventDetails;
     }
 
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    //the below constructor allows me to add tags to events
+    public void addTag(Tag tag) {
+        this.tags.add(tag);
+    }
     @Override
     public String toString(){
         return name;
