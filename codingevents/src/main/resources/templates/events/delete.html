@@ -12,7 +12,7 @@
         <div class="form-group">
             <label>
                 <span th:text="${event.name}"></span>
-                <input type="checkbox" name="eventIds" th:value="${event.id}"> <!--The bootstrap styling -class="form-control- does not work when trying to use the checkbox feature-->
+                <input type="checkbox" name="eventIds" th:value="${event.id}" class="form-control"> <!--The bootstrap styling -class="form-control- does not work when trying to use the checkbox feature-->
             </label>
         </div>
     </th:block>
